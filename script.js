@@ -205,14 +205,15 @@
       var progress = clamp((viewport - rect.top) / (viewport + rect.height), 0, 1);
       var start = parseFloat(el.getAttribute("data-tilt-start")) || 0;
       var end = parseFloat(el.getAttribute("data-tilt-end")) || 0;
-      var factor = isSmall ? 0.45 : 1;
+      var isPhone = window.matchMedia("(max-width: 600px)").matches;
+      var factor = isPhone ? 0.35 : (isSmall ? 0.45 : 1);
       var tilt = (start + (end - start) * progress) * factor;
 
       el.style.setProperty("--tilt", tilt.toFixed(2) + "deg");
 
       if (el.hasAttribute("data-parallax") || el.querySelector("[data-parallax]")) {
         var img = el.hasAttribute("data-parallax") ? el : el.querySelector("[data-parallax]");
-        var py = (progress - 0.5) * (isSmall ? 18 : 34);
+        var py = (progress - 0.5) * (isPhone ? 10 : (isSmall ? 18 : 34));
         img.style.setProperty("--py", py.toFixed(2) + "px");
       }
     });

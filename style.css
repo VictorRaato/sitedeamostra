@@ -1685,3 +1685,51 @@ html:not(.js) .hero__trust { transform: none; opacity: 1; animation: none; }
   .hero__scroll span { animation: none; }
   html.js .reveal { opacity: 1; transform: none; transition: none; }
 }
+
+/* ====================== AJUSTES SÓ PARA CELULAR (até 600px) =================
+   Tudo do mobile fica neste único bloco. Desktop e tablet não são afetados. */
+@media (max-width: 600px) {
+  /* --- 1) Tratamentos: 3 linhas de 2 cartões, menores --- */
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .service-card { min-width: 0; padding: 0; border-radius: 16px; }
+  .service-card:hover { transform: none; }
+  .service-card__photo { padding: 12px 12px 0; }
+  .service-card__photo .media { --radius: 14px; padding: 2px; }
+  .service-card__photo .media__inner { border-radius: calc(14px - 2px); }
+  .service-card__photo .media__inner--landscape { aspect-ratio: 1 / 1; }
+  .service-card__photo .media__inner img { object-fit: cover; object-position: center; }
+  .service-card__body { padding: 12px; min-width: 0; }
+  .service-card__tag { margin-bottom: 8px; padding: 3px 8px; font-size: 0.6rem; letter-spacing: 0.12em; }
+  .service-card h3 { font-size: clamp(15px, 4.2vw, 17px); line-height: 1.2; margin-bottom: 6px; overflow-wrap: anywhere; }
+  .service-card p {
+    font-size: 12.5px;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+  }
+  .service-card .link-arrow { margin-top: auto; font-size: 11px; letter-spacing: 0.06em; gap: 5px; }
+
+  /* --- 2) Doutora: imagem à direita (42%), texto fluindo ao lado --- */
+  .especialista .zigzag { display: flow-root; }
+  .especialista .zigzag__media {
+    float: right;
+    width: 42%;
+    margin: 6px 4px 10px 14px;
+    shape-margin: 12px;
+  }
+  .especialista .zigzag__media .media { --radius: 16px; padding: 2px; }
+  .especialista .zigzag__media .media__inner { border-radius: calc(16px - 2px); }
+  .especialista .zigzag__body { max-width: none; }
+  .especialista .section__title { font-size: clamp(1.45rem, 6.6vw, 1.85rem); line-height: 1.12; overflow-wrap: break-word; }
+  .especialista .role { margin-top: -4px; margin-bottom: 14px; font-size: 0.66rem; letter-spacing: 0.06em; line-height: 1.5; }
+  .especialista .lead,
+  .especialista .zigzag__body p { font-size: 15px; line-height: 1.5; }
+  .especialista .eyebrow { display: block; margin-bottom: 10px; font-size: 0.62rem; letter-spacing: 0.08em; line-height: 1.4; }
+  .especialista .eyebrow::before { display: none; }
+  .especialista .quote { margin: 16px 0; padding-left: 14px; font-size: 16px; line-height: 1.5; }
+  .especialista .btn { display: flex; clear: both; width: 100%; justify-content: center; margin-top: 22px; }
+}
