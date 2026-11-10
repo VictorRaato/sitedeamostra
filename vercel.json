@@ -1,5 +1,15 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/inicio", "destination": "/index.html" },
+    { "source": "/sobre", "destination": "/index.html" },
+    { "source": "/tratamentos", "destination": "/index.html" },
+    { "source": "/galeria", "destination": "/index.html" },
+    { "source": "/resultados", "destination": "/index.html" },
+    { "source": "/depoimentos", "destination": "/index.html" },
+    { "source": "/faq", "destination": "/index.html" },
+    { "source": "/localizacao", "destination": "/index.html" }
+  ]
 }

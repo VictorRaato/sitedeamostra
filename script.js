@@ -11,6 +11,7 @@
    9. FAQ (acordeão)
    10. Comparador antes/depois
    11. Fallback de imagens e ano do rodapé
+   12. Endereços sem "#" (inicio, sobre, tratamentos...)
    ========================================================================== */
 (function () {
   "use strict";
@@ -492,6 +493,115 @@
   var yearEl = $("#year");
   if (yearEl) {
     yearEl.textContent = new Date().getFullYear();
+  }
+
+  /* ------------- 12. ENDEREÇOS SEM "#" NA BARRA -------------------------- */
+  // Cada seção tem um caminho próprio (/inicio, /sobre, /tratamentos...).
+  // O endereço muda sozinho conforme a rolagem e ao clicar nos atalhos.
+  var ROTAS = {
+    inicio: "hero",
+    sobre: "sobre",
+    tratamentos: "tratamentos",
+    galeria: "galeria",
+    resultados: "resultados",
+    depoimentos: "depoimentos",
+    faq: "faq",
+    localizacao: "localizacao"
+  };
+
+  var travaEnderecoAte = 0;
+
+  function chaveDaRota(caminho) {
+    var chave = String(caminho || "").replace(/^\/+/, "").replace(/\/+$/, "");
+    return Object.prototype.hasOwnProperty.call(ROTAS, chave) ? chave : null;
+  }
+
+  function trocarEndereco(caminho, registrar) {
+    if (location.pathname === caminho) return;
+    try {
+      if (registrar) history.pushState(null, "", caminho);
+      else history.replaceState(null, "", caminho);
+    } catch (e) { /* file:// não permite */ }
+  }
+
+  function secaoNaTela() {
+    var y = window.scrollY || window.pageYOffset;
+    if (y < 80) return "inicio";
+
+    var limite = y + 140;
+    var escolhida = "inicio";
+    var maiorTopo = -1;
+
+    Object.keys(ROTAS).forEach(function (chave) {
+      var el = document.getElementById(ROTAS[chave]);
+      if (!el) return;
+      var topo = el.getBoundingClientRect().top + y;
+      if (topo <= limite && topo > maiorTopo) {
+        maiorTopo = topo;
+        escolhida = chave;
+      }
+    });
+
+    return escolhida;
+  }
+
+  function atualizarEndereco() {
+    if (Date.now() < travaEnderecoAte) return;
+    trocarEndereco("/" + secaoNaTela(), false);
+  }
+
+  function rolarPara(chave, suave) {
+    var el = document.getElementById(ROTAS[chave]);
+    if (!el) return false;
+    travaEnderecoAte = Date.now() + 900;
+    el.scrollIntoView({
+      behavior: suave && !reduceMotion.matches ? "smooth" : "auto",
+      block: "start"
+    });
+    return true;
+  }
+
+  $$('a[href^="/"]').forEach(function (link) {
+    link.addEventListener("click", function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      var chave = chaveDaRota(link.getAttribute("href"));
+      if (!chave) return;
+      e.preventDefault();
+      trocarEndereco("/" + chave, true);
+      rolarPara(chave, true);
+    });
+  });
+
+  window.addEventListener("popstate", function () {
+    var chave = chaveDaRota(location.pathname);
+    if (chave) rolarPara(chave, false);
+  });
+
+  // Endereço acompanha a rolagem (com um respiro curto para não piscar)
+  var enderecoPendente = false;
+  window.addEventListener("scroll", function () {
+    if (enderecoPendente) return;
+    enderecoPendente = true;
+    window.setTimeout(function () {
+      enderecoPendente = false;
+      atualizarEndereco();
+    }, 120);
+  }, { passive: true });
+
+  function aplicarRotaInicial() {
+    var chave = chaveDaRota(location.pathname);
+    if (chave && chave !== "inicio") {
+      rolarPara(chave, false);
+    } else {
+      trocarEndereco("/inicio", false);
+      atualizarEndereco();
+    }
+  }
+
+  if (document.readyState === "complete") {
+    aplicarRotaInicial();
+  } else {
+    window.addEventListener("load", aplicarRotaInicial);
   }
 
   /* Garante o estado inicial do cabeçalho/progresso */
